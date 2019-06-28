@@ -67,12 +67,16 @@ let update msg model =
             Report = Some response
             ServerState = Idle }, Cmd.none
     | _, PostcodeChanged p ->
+        let validation =
+            match Validation.isValidPostcode p with
+            | false -> Some (sprintf "%s" p)
+            | true -> None
         { model with
             Postcode = p
-            (* Task 2.2 Validation. Use the Validation.validatePostcode function to implement client-side form validation.
-               Note that the validation is the same shared code that runs on the server! *)
-            ValidationError = None }, Cmd.none
+            ValidationError = validation }, Cmd.none
     | _, ErrorMsg e -> { model with ServerState = ServerError e.Message }, Cmd.none
+
+
 
 [<AutoOpen>]
 module ViewParts =
@@ -107,8 +111,7 @@ module ViewParts =
         basicTile "Map" [ Tile.Size Tile.Is12 ] [
             iframe [
                 Style [ Height 410; Width 810 ]
-                (* Task 3.1 MAPS: Use the getBingMapUrl function to build a valid maps URL using the supplied LatLong.
-                   You can use it to add a Src attribute to this iframe. *)
+                Src (getBingMapUrl latLong)
             ] [ ]
         ]
 

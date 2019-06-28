@@ -8,7 +8,7 @@ open Saturn
 open Shared
 open FSharp.Control.Tasks
 
-let private london = { Latitude = 51.5074; Longitude = 0.1278 }
+let private london = { Latitude = 51.508; Longitude = 0.1278 }
 let invalidPostcode next (ctx:HttpContext) =
     ctx.SetStatusCode 400
     text "Invalid postcode" next ctx
@@ -50,10 +50,7 @@ let getWeather postcode next ctx = task {
 let apiRouter = router {
     pipe_through (pipeline { set_header "x-pipeline-type" "Api" })
     getf "/distance/%s" getDistanceFromLondon
-
-    (* Task 1.0 CRIME: Add a new /crime/{postcode} endpoint to return crime data
-       using the getCrimeReport web part function. Use the above distance
-       route as an example of how to add a new route. *)
+    getf "/crime/%s" getCrimeReport
 
     (* Task 4.2 WEATHER: Hook up the weather endpoint to the getWeather function. *)
 
